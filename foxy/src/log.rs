@@ -1,4 +1,4 @@
-pub mod foxy {
+pub mod logging {
   #[allow(unused_imports)]
   pub use tracing::{error, debug, info, trace, Level};
   pub use tracing::subscriber::SetGlobalDefaultError;

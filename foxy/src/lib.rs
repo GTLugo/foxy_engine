@@ -3,9 +3,9 @@
 extern crate glium;
 mod log;
 
-pub mod foxy {
+pub mod app {
   #[allow(unused_imports)]
-  use crate::{fox_debug, fox_error, fox_trace, log::foxy::*};
+  use crate::{fox_debug, fox_error, fox_trace, log::logging::*};
   
   //#[allow(unused_imports)]
   use glium::{

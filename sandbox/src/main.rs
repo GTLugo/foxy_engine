@@ -1,6 +1,6 @@
-use foxy::foxy;
+use foxy::app::*;
 
 fn main() {
-  let app = foxy::App::new("Sandbox", 800, 450);
+  let app = App::new("Sandbox", 800, 450);
   app.run();
 }
