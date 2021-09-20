@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["gtlugo"]
 description = "A work in progress simple engine for apps. Not meant to be anything amazing."
-repository = ""
+repository = "https://github.com/GTLugo/foxy_engine"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
