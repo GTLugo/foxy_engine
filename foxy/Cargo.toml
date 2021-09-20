@@ -20,3 +20,4 @@ colored = "*"
 
 # engine
 glium = "*"
+#winit_input_helper = "*"
