@@ -1,0 +1,21 @@
+[package]
+name = "foxy"
+version = "0.1.0"
+edition = "2021"
+authors = ["gtlugo"]
+description = "A work in progress simple engine for apps. Not meant to be anything amazing."
+repository = ""
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# logging
+tracing = "*"
+tracing-subscriber = "*"
+tracing-unwrap = "*"
+log = "*"
+env_logger = "*"
+colored = "*"
+
+# engine
+glium = "*"

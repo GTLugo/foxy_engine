@@ -1,0 +1,13 @@
+C:\Home\Projects\Personal\foxtrot\bin\debug\deps\quote-e2a93c87bccbde1f.rmeta: C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\lib.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ext.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\format.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ident_fragment.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\to_tokens.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\runtime.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\spanned.rs
+
+C:\Home\Projects\Personal\foxtrot\bin\debug\deps\libquote-e2a93c87bccbde1f.rlib: C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\lib.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ext.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\format.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ident_fragment.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\to_tokens.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\runtime.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\spanned.rs
+
+C:\Home\Projects\Personal\foxtrot\bin\debug\deps\quote-e2a93c87bccbde1f.d: C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\lib.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ext.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\format.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ident_fragment.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\to_tokens.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\runtime.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\spanned.rs
+
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\lib.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ext.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\format.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\ident_fragment.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\to_tokens.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\runtime.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\quote-1.0.9\src\spanned.rs:

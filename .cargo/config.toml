@@ -1,0 +1,4 @@
+[build]
+target-dir = "bin"
+incremental = true
+pipelining = true

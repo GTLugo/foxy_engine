@@ -1,0 +1,13 @@
+c:\Home\Projects\Personal\foxtrot\bin\debug\deps\tracing-2fc7998d98b1400d.rmeta: C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\lib.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\macros.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\dispatcher.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\field.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\instrument.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\level_filters.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\span.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\stdlib.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\subscriber.rs
+
+c:\Home\Projects\Personal\foxtrot\bin\debug\deps\tracing-2fc7998d98b1400d.d: C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\lib.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\macros.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\dispatcher.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\field.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\instrument.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\level_filters.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\span.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\stdlib.rs C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\subscriber.rs
+
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\lib.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\macros.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\dispatcher.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\field.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\instrument.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\level_filters.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\span.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\stdlib.rs:
+C:\Users\galex\.cargo\registry\src\github.com-1ecc6299db9ec823\tracing-0.1.28\src\subscriber.rs:
