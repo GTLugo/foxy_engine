@@ -7,8 +7,8 @@ pub mod app {
   #[allow(unused_imports)]
   use crate::{fox_debug, fox_error, fox_trace, log::logging::*};
   
-  //#[allow(unused_imports)]
-  use glium::{Display, Surface, glutin::{ContextBuilder, dpi::{PhysicalPosition, PhysicalSize}, event::*, event_loop::*, window::WindowBuilder}};
+  #[allow(unused_imports)]
+  use glium::{Display, Surface, glutin::{ContextBuilder, dpi::{PhysicalPosition, PhysicalSize}, event::*, event_loop::*, window::{WindowBuilder}}};
     
   #[cfg(target_os = "windows")]
   use glium::glutin::platform::windows::EventLoopExtWindows;
@@ -58,18 +58,33 @@ pub mod app {
         .with_inner_size(PhysicalSize{width: self.info.width, height: self.info.height})
         .with_decorations(false);
       let cb = ContextBuilder::new();
-      self.display = Some(Box::new(Display::new(wb, cb, &event_loop).unwrap_or_log()));
+      let display = Display::new(wb, cb, &event_loop);
+      match display {
+        Ok(d) => {
+          self.display = Some(Box::new(d));
+        },
+        Err(_) => {
+          fox_error!("FOXY", "failed to initialize display!");
+        },
+      }
 
-      // Start event loop
-      event_loop.run(move |event, _, control_flow| {
-        self.state.control_flow = *control_flow; // Capture control_flow value
-
-        // Lifetime process
-        self.update(&event);
-        self.render();
-
-        *control_flow = self.state.control_flow; // Update control_flow value
-      });
+      match self.display {
+        Some(_) => {
+          // Start event loop
+          event_loop.run(move |event, _, control_flow| {
+            self.state.control_flow = *control_flow; // Capture control_flow value
+    
+            // App lifetime events
+            self.update(&event);
+            self.render();
+    
+            *control_flow = self.state.control_flow; // Update control_flow value
+          });
+        },
+        None => {
+          fox_error!("FOXY", "failed to find display!");
+        },
+      }
     }
 
     fn update(&mut self, e: &Event<()>) {
