@@ -8,7 +8,7 @@ pub mod app {
   use crate::{fox_debug, fox_error, fox_trace, log::logging::*};
   
   //#[allow(unused_imports)]
-  use glium::{Display, Frame, Surface, glutin::{ContextBuilder, dpi::{PhysicalPosition, PhysicalSize}, event::*, event_loop::*, window::WindowBuilder}};
+  use glium::{Display, Surface, glutin::{ContextBuilder, dpi::{PhysicalPosition, PhysicalSize}, event::*, event_loop::*, window::WindowBuilder}};
     
   #[cfg(target_os = "windows")]
   use glium::glutin::platform::windows::EventLoopExtWindows;
@@ -51,6 +51,7 @@ pub mod app {
     }
 
     pub fn run(mut self) {
+      // Create event loop, context, & window
       let event_loop = Box::new(EventLoop::new_any_thread());
       let wb = WindowBuilder::new()
         .with_title(self.info.title)
@@ -59,16 +60,19 @@ pub mod app {
       let cb = ContextBuilder::new();
       self.display = Some(Box::new(Display::new(wb, cb, &event_loop).unwrap_or_log()));
 
+      // Start event loop
       event_loop.run(move |event, _, control_flow| {
-        self.state.control_flow = *control_flow;
+        self.state.control_flow = *control_flow; // Capture control_flow value
+
+        // Lifetime process
         self.update(&event);
-        *control_flow = self.state.control_flow;
+        self.render();
+
+        *control_flow = self.state.control_flow; // Update control_flow value
       });
     }
 
     fn update(&mut self, e: &Event<()>) {
-      let frame = self.display.as_ref().unwrap_or_log().draw();
-      Self::render(frame);
       
       self.state.control_flow = ControlFlow::Poll;
       match e {
@@ -112,7 +116,9 @@ pub mod app {
       }
     }
         
-    fn render(mut frame: Frame) {
+    fn render(&mut self) {
+      let mut frame = self.display.as_ref().unwrap_or_log().draw();
+
       frame.clear_color_srgb(0.10, 0.13, 0.16, 1.0);
       frame.finish().unwrap_or_log();
     }
