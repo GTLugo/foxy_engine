@@ -8,81 +8,87 @@ pub mod app {
   use crate::{fox_debug, fox_error, fox_trace, log::logging::*};
   
   //#[allow(unused_imports)]
-  use glium::{
-      Display, Frame, Surface,
-      glutin::{
-        event::*, 
-        event_loop::*,
-        window::WindowBuilder,
-        ContextBuilder,
-        dpi::PhysicalSize
-      }
-  };
+  use glium::{Display, Frame, Surface, glutin::{ContextBuilder, dpi::{PhysicalPosition, PhysicalSize}, event::*, event_loop::*, window::WindowBuilder}};
     
   #[cfg(target_os = "windows")]
   use glium::glutin::platform::windows::EventLoopExtWindows;
   #[cfg(target_os = "linux")]
   use glium::glutin::platform::unix::EventLoopExtUnix;
     
-  struct EventLoopData<'a> {
-    pub event: Event<'a, ()>, 
-    pub control_flow: &'a mut ControlFlow
+
+  pub struct AppInfo {
+    pub title: &'static str,
+    pub width: u32,
+    pub height: u32
+  }
+  struct AppState {
+    pub control_flow: ControlFlow,
+    pub mouse_location: PhysicalPosition<f64>
   }
 
   pub struct App {
-    event_loop: Box<EventLoop<()>>,
-    display: Box<Display>
+    display: Option<Box<Display>>,
+    info: AppInfo,
+    state: AppState
   }
 
   impl App {
-    pub fn new(title: &str, width: u32, height: u32) -> Self {
+    pub fn new(info: AppInfo) -> Self {
       match setup_logging() {
         Ok(_) => { fox_trace!("ENGINE", "logger initialized!") }
         Err(_) => { fox_error!("ENGINE", "failed to initialize logger!") }
       };
+      let state = AppState {
+        control_flow: ControlFlow::Poll,
+        mouse_location: PhysicalPosition{x: 0.0, y: 0.0}
+      };
 
-      let event_loop = Box::new(EventLoop::new_any_thread());
-      let wb = WindowBuilder::new()
-        .with_title(title)
-        .with_inner_size(PhysicalSize{width, height})
-        .with_decorations(false);
-      let cb = ContextBuilder::new();
-      let display = Box::new(Display::new(wb, cb, &event_loop).unwrap_or_log());
       Self {
-        event_loop,
-        display
+        display: None,
+        info,
+        state
       }
     }
 
-    pub fn run(self) {
-      self.event_loop.run(move |e, _, control_flow| {
-        let mut event_loop_data = EventLoopData {
-            event: e,
-            control_flow
-        };
-        
-        Self::update(&mut event_loop_data, &self.display);
+    pub fn run(mut self) {
+      let event_loop = Box::new(EventLoop::new_any_thread());
+      let wb = WindowBuilder::new()
+        .with_title(self.info.title)
+        .with_inner_size(PhysicalSize{width: self.info.width, height: self.info.height})
+        .with_decorations(false);
+      let cb = ContextBuilder::new();
+      self.display = Some(Box::new(Display::new(wb, cb, &event_loop).unwrap_or_log()));
+
+      event_loop.run(move |event, _, control_flow| {
+        self.state.control_flow = *control_flow;
+        self.update(&event);
+        *control_flow = self.state.control_flow;
       });
     }
 
-    fn update(data: &mut EventLoopData, display: &Display) {
-      let frame = display.draw();
+    fn update(&mut self, e: &Event<()>) {
+      let frame = self.display.as_ref().unwrap_or_log().draw();
       Self::render(frame);
       
-      *data.control_flow = ControlFlow::Poll;
-      match &data.event {
+      self.state.control_flow = ControlFlow::Poll;
+      match e {
         Event::WindowEvent { event, window_id} => 
           match event {
             WindowEvent::CloseRequested => {
-              if *window_id == display.gl_window().window().id() {
-                *data.control_flow = ControlFlow::Exit;
+              if *window_id == self.display.as_ref().unwrap_or_log().gl_window().window().id() {
+                self.state.control_flow = ControlFlow::Exit;
               }
+            },
+            WindowEvent::CursorMoved {device_id: _, position, .. } => {
+              self.state.mouse_location = *position;
             },
             WindowEvent::MouseInput { device_id: _, state, button, .. } => {
               match (state, button) {
                 (ElementState::Pressed, MouseButton::Left) => {
+                  
+
                   fox_debug!("FOXY", "mouse left pressed");
-                  display.gl_window().window().drag_window().unwrap();
+                  self.display.as_ref().unwrap_or_log().gl_window().window().drag_window().unwrap_or_log();
                 },
                 _ => (),
               }
@@ -92,7 +98,7 @@ pub mod app {
                 Some(keycode) => {
                   match keycode {
                     VirtualKeyCode::Escape => {
-                      *data.control_flow = ControlFlow::Exit;
+                      self.state.control_flow = ControlFlow::Exit;
                     },
                     _ => (),
                   }
