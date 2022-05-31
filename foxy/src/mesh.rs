@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+use std::ops::Index;
 // inspired by https://github.com/BVE-Reborn/rend3/
 use crate::{
   util::{
@@ -48,17 +50,23 @@ impl MeshBuilder {
     }
   }
 
-  // pub fn new_from_triangles(vertex_positions: Vec<Triangle>) -> Self {
-  //   assert!(vertex_positions.len() >= 3);
-  //   Self {
-  //     vertex_positions,
-  //     vertex_colors: None,
-  //     indices: vec![
-  //       0, 1, 2,
-  //       0, 2, 3,
-  //     ],
-  //   }
-  // }
+  pub fn new_from_triangles(triangles: Vec<Triangle>) -> Self {
+    let mut vertices = Vec::<Vertex>::new();
+    let mut indices = Vec::<u32>::new();
+    for triangle in triangles.iter() {
+      for vertex in triangle.vertices {
+        let index = vertices.iter().position(|&v| v == vertex);
+        if index.is_none() {
+          indices.push(vertices.len() as u32);
+          vertices.push(vertex);
+        } else {
+          indices.push(index.unwrap() as u32);
+        }
+      }
+    }
+
+    Self::new_from_vertices(vertices, indices)
+  }
 
   pub fn new_from_vertices(vertices: Vec<Vertex>, indices: Vec<u32>) -> Self {
     assert!(vertices.len() >= 3);
@@ -103,29 +111,18 @@ impl MeshBuilder {
     Self {
       vertex_positions,
       vertex_colors: None,
-      indices: Self::get_indices(vertex_count, IndexingStyle::FAN),
+      indices: Self::fanned_indices(vertex_count),
     }
   }
 
-  pub fn new_poly_from_vertices(vertices: Vec<Vertex>/*, index_style: IndexingStyle*/) -> Self {
+  pub fn new_poly_from_vertices(vertices: Vec<Vertex>) -> Self {
     assert!(vertices.len() >= 3);
     let vertex_count = vertices.len() as u32;
 
     Self::new_from_vertices(
       vertices,
-      Self::get_indices(vertex_count, IndexingStyle::FAN)
+      Self::fanned_indices(vertex_count)
     )
-  }
-
-  fn get_indices(vertex_count: u32, index_style: IndexingStyle) -> Vec<u32> {
-    match index_style {
-      IndexingStyle::FAN => {
-        Self::fanned_indices(vertex_count)
-      }
-      IndexingStyle::SPIRAL => {
-        Self::spiral_indices(vertex_count)
-      }
-    }
   }
 
   fn fanned_indices(vertex_count: u32) -> Vec<u32> {
@@ -134,93 +131,6 @@ impl MeshBuilder {
     for i in 1..(vertex_count - 1) {
       indices.append(&mut vec![0, i, i + 1]);
     }
-
-    indices
-  }
-
-  /*fn spiral_indices_old(vertex_count: u32) -> Vec<u32> {
-    let mut indices = Vec::<u32>::new();
-    debug!("START");
-
-    let mut skip_factor = 1;
-    let mut j = 0;
-    let mut should_iterate = true;
-    let mut seen = true;
-    for _tri_count in 0..(vertex_count - 2) as u32 {
-      fn get_index(
-        element: u32,
-        j: &mut u32,
-        skip_factor: &mut u32,
-        size: u32,
-        seen: &mut bool
-      ) -> u32 {
-        let x = ((*j * 2 + element) * *skip_factor) % size;
-
-        if x == 0 {
-          if !*seen {
-            *seen = true;
-            *skip_factor *= 2;
-            *j = 0;
-          } else {
-            *seen = false;
-          }
-        }
-        x
-        //debug!("x: {}, y: {}", x, (x % size) * *skip_factor);
-      }
-
-      let a = get_index(0, &mut j, &mut skip_factor, vertex_count, &mut seen);
-      let b = get_index(1, &mut j, &mut skip_factor, vertex_count, &mut seen);
-      let c = get_index(2, &mut j, &mut skip_factor, vertex_count, &mut seen);
-
-      j += 1;
-
-      indices.append(&mut vec![a, b, c]);
-      debug!("{:?}", vec![a, b, c]);
-    }
-
-    indices
-  }*/
-
-  fn spiral_indices(vertex_count: u32) -> Vec<u32> {
-    let mut indices = Vec::<u32>::new();
-
-    let first_index = 0;
-    indices.push(first_index);
-
-    let mut double = false; // repeat value
-    let mut increment = 1; // amount to increase value for next value
-    let mut _loopback_increment = 0; // additional offset for next value upon finished loop in spiral
-
-    let mut x = 1;
-    let mut i = 1;
-    let end = ((vertex_count - 2) * 3) - 1; // end of loop
-    while i <= end {
-      let index = x % vertex_count;
-
-      indices.push(index);
-      if double && i != end {
-        indices.push(index);
-        double = false;
-        i += 1;
-        // debug!("{}", index);
-      } else {
-        double = true;
-      }
-
-      // debug!("x {}, index {}, increment {}, next {}", x, index, increment, (index + increment) >= vertex_count);
-      x += increment;
-      let next_index = x % vertex_count;
-      if index + increment >= vertex_count {
-        debug!("x {}, index {}, next_index {}, increment {}, vertex_count {}", x, index, next_index, increment, vertex_count);
-        x += (vertex_count - next_index) % 2;
-        _loopback_increment += 1;
-        increment *= 2;
-      }
-      i += 1;
-    }
-
-    debug!("{:?}", indices);
 
     indices
   }

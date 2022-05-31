@@ -4,7 +4,7 @@ use rgb::{RGBA};
 use wgpu::{vertex_attr_array, VertexAttribute};
 //use crate::util::color::RGBA;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(C)]
 pub struct Vertex {
   pub position: Vec3,
