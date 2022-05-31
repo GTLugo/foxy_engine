@@ -1,11 +1,17 @@
-use foxy::app::*;
+use foxy::{
+  util::log::error,
+  App,
+  tokio,
+};
 
-fn main() {
-  let app_data = AppInfo {
-    title: "Sandbox",
-    width: 800,
-    height: 450
+#[tokio::main]
+async fn main() {
+  match App::new("Sandbox", [800, 450]).await {
+    Ok(app) => {
+      app.run().await;
+    }
+    Err(e) => {
+      error!("{:?}", e);
+    }
   };
-  let app = App::new(app_data);
-  app.run();
 }

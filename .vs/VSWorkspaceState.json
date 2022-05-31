@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\foxy",
+    "\\foxy\\res",
+    "\\foxy\\res\\shaders"
+  ],
+  "SelectedNode": "\\foxy\\res\\shaders\\simple_shader_fragment.hlsl",
+  "PreviewInSolutionExplorer": false
+}

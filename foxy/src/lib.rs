@@ -1,141 +1,117 @@
-#[allow(unused_imports)]
+//#![feature(backtrace)]
 #[macro_use]
-extern crate glium;
-mod log;
+pub mod util;
+pub mod state;
+pub mod mesh;
+pub mod vertex;
 
-pub mod app {
-  #[allow(unused_imports)]
-  use crate::{fox_debug, fox_error, fox_trace, log::logging::*};
-  
-  #[allow(unused_imports)]
-  use glium::{Display, Surface, glutin::{ContextBuilder, dpi::{PhysicalPosition, PhysicalSize}, event::*, event_loop::*, window::{WindowBuilder}}};
-    
-  #[cfg(target_os = "windows")]
-  use glium::glutin::platform::windows::EventLoopExtWindows;
-  #[cfg(target_os = "linux")]
-  use glium::glutin::platform::unix::EventLoopExtUnix;
-    
+use anyhow::Context;
+use util::{
+  log::*,
+  error::FoxyError,
+};
+use state::*;
+pub use tokio::{
+  self,
+  net::TcpListener,
+  io::{AsyncReadExt, AsyncWriteExt}
+};
 
-  pub struct AppInfo {
-    pub title: &'static str,
-    pub width: u32,
-    pub height: u32
+use wgpu::SurfaceError;
+use winit::{
+  event::*,
+  event_loop::{ControlFlow, EventLoop},
+  window::{Window, WindowBuilder},
+};
+
+pub struct App {
+  event_loop: EventLoop<()>,
+  window:     Window,
+  state:      State,
+}
+
+impl App {
+  pub async fn new(title: &str, window_size: [u32; 2]) -> Result<Self, FoxyError> {
+    logger::init().context("Failed to initialize logger")?;
+
+    debug!("Initializing app");
+
+    let event_loop = winit::event_loop::EventLoop::new();
+
+    let (logical_size, _physical_size) = {
+      use winit::dpi::{LogicalSize, PhysicalSize};
+
+      let dpi = event_loop.primary_monitor()
+        .context("Failed to find primary monitor.")?
+        .scale_factor();
+      let logical: LogicalSize<u32> = window_size.into();
+      let physical: PhysicalSize<u32> = logical.to_physical(dpi);
+
+      (logical, physical)
+    };
+
+    debug!("Building window");
+
+    let window = WindowBuilder::new()
+      .with_title(title)
+      .with_inner_size(logical_size)
+      .with_visible(false)
+      .build(&event_loop)
+      .context("Failed to build window")?;
+
+    let state = State::new(&window).await?;
+
+    debug!("App initialized");
+
+    Ok(App {
+      event_loop,
+      window,
+      state,
+    })
   }
-  struct AppState {
-    pub control_flow: ControlFlow,
-    pub mouse_location: PhysicalPosition<f64>
-  }
 
-  pub struct App {
-    display: Option<Box<Display>>,
-    info: AppInfo,
-    state: AppState
-  }
+  pub async fn run(mut self) {
+    debug!("Starting app");
+    self.state.start();
 
-  impl App {
-    pub fn new(info: AppInfo) -> Self {
-      match setup_logging() {
-        Ok(_) => { fox_trace!("ENGINE", "logger initialized!") }
-        Err(_) => { fox_error!("ENGINE", "failed to initialize logger!") }
-      };
-      let state = AppState {
-        control_flow: ControlFlow::Poll,
-        mouse_location: PhysicalPosition{x: 0.0, y: 0.0}
-      };
-
-      Self {
-        display: None,
-        info,
-        state
-      }
-    }
-
-    pub fn run(mut self) {
-      // Create event loop, context, & window
-      let event_loop = Box::new(EventLoop::new_any_thread());
-      let wb = WindowBuilder::new()
-        .with_title(self.info.title)
-        .with_inner_size(PhysicalSize{width: self.info.width, height: self.info.height})
-        .with_decorations(false);
-      let cb = ContextBuilder::new();
-      let display = Display::new(wb, cb, &event_loop);
-      match display {
-        Ok(d) => {
-          self.display = Some(Box::new(d));
-        },
-        Err(_) => {
-          fox_error!("FOXY", "failed to initialize display!");
-        },
-      }
-
-      match self.display {
-        Some(_) => {
-          // Start event loop
-          event_loop.run(move |event, _, control_flow| {
-            self.state.control_flow = *control_flow; // Capture control_flow value
-    
-            // App lifetime events
-            self.update(&event);
-            self.render();
-    
-            *control_flow = self.state.control_flow; // Update control_flow value
-          });
-        },
-        None => {
-          fox_error!("FOXY", "failed to find display!");
-        },
-      }
-    }
-
-    fn update(&mut self, e: &Event<()>) {
-      
-      self.state.control_flow = ControlFlow::Poll;
-      match e {
-        Event::WindowEvent { event, window_id} => 
-          match event {
-            WindowEvent::CloseRequested => {
-              if *window_id == self.display.as_ref().unwrap_or_log().gl_window().window().id() {
-                self.state.control_flow = ControlFlow::Exit;
-              }
-            },
-            WindowEvent::CursorMoved {device_id: _, position, .. } => {
-              self.state.mouse_location = *position;
-            },
-            WindowEvent::MouseInput { device_id: _, state, button, .. } => {
-              match (state, button) {
-                (ElementState::Pressed, MouseButton::Left) => {
-                  
-
-                  fox_debug!("FOXY", "mouse left pressed");
-                  self.display.as_ref().unwrap_or_log().gl_window().window().drag_window().unwrap_or_log();
-                },
-                _ => (),
-              }
-            },
-            WindowEvent::KeyboardInput { input, is_synthetic: _, .. } => {
-              match input.virtual_keycode {
-                Some(keycode) => {
-                  match keycode {
-                    VirtualKeyCode::Escape => {
-                      self.state.control_flow = ControlFlow::Exit;
-                    },
-                    _ => (),
-                  }
-                },
-                None => (),
-              }
-            }
-            _ => (),
+    self.event_loop.run(move |event, _, control_flow| {
+      *control_flow = ControlFlow::Poll;
+      match event {
+        // Handle window events only if the input states are satisfied first
+        Event::WindowEvent { event, .. } if !self.state.input(&event) => match event {
+          WindowEvent::CloseRequested => {
+            *control_flow = ControlFlow::Exit;
+            debug!("Stopping app");
           },
+          WindowEvent::Resized(dims) => {
+            self.state.resize(dims);
+          }
+          WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+            self.state.resize(*new_inner_size);
+          }
+          _ => (),
+        },
+        Event::MainEventsCleared => {
+          self.state.tick();
+          self.state.update();
+          match self.state.render() {
+            // Reconfigure the surface if it's lost or outdated
+            Err(SurfaceError::Lost | SurfaceError::Outdated) =>
+              self.state.resize(self.state.size),
+            // The system is out of memory, we should probably quit
+            Err(SurfaceError::OutOfMemory) => {
+              *control_flow = ControlFlow::Exit;
+              error!("System out of memory!");
+            },
+            Err(SurfaceError::Timeout) => warn!("Surface timeout"),
+            Ok(_) => {
+              // Upon successful first rendering, reveal the window
+              self.window.set_visible(true);
+            }
+          }
+        },
         _ => (),
       }
-    }
-        
-    fn render(&mut self) {
-      let mut frame = self.display.as_ref().unwrap_or_log().draw();
-
-      frame.clear_color_srgb(0.10, 0.13, 0.16, 1.0);
-      frame.finish().unwrap_or_log();
-    }
+    });
   }
 }
