@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-use std::ops::Index;
 // inspired by https://github.com/BVE-Reborn/rend3/
 use crate::{
   util::{
