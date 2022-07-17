@@ -2,7 +2,6 @@ use std::mem::size_of;
 use glam::*;
 use rgb::{RGBA};
 use wgpu::{vertex_attr_array, VertexAttribute};
-//use crate::util::color::RGBA;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(C)]
@@ -10,9 +9,6 @@ pub struct Vertex {
   pub position: Vec3,
   pub color: Option<RGBA<f32>>,
 }
-
-// unsafe impl bytemuck::Zeroable for Vertex {}
-// unsafe impl bytemuck::Pod for Vertex {}
 
 impl Vertex {
   pub const VERTEX_POSITION_SLOT: u32 = 0;

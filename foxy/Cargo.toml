@@ -16,16 +16,25 @@ crate-type = ["cdylib", "rlib"]
 #shaderc = "0.8.*"
 
 [dependencies]
+foxy-ecs = { path = "foxy-ecs" }
+foxy-macro = { path = "foxy-macro" }
+foxy-macro-derive = { path = "foxy-macro-derive" }
+
 # rendering
 winit = "0.26.*"
 wgpu = "0.12.*"
 
 # utilities
 tokio = { version = "1.17.*", features = ["full"] }
-stopwatch = "0.0.*"
-rand = "0.8.*"
 glam = { version = "0.20.*", features = ["bytemuck"] }
 rgb = { version = "0.8.*", features = ["bytemuck"] }
+image = { version = "0.24.*", features = ["png", "jpeg"] }
+stopwatch = "0.0.*"
+chrono = "0.4.*"
+rand = "0.8.*"
+uuid = { version = "1.1.*", features = ["v4", "fast-rng"] }
+
+#backend
 bytemuck = { version = "1.9.*", features = [ "derive" ] }
 thiserror = "1.0.*"
 anyhow = "1.0.*"

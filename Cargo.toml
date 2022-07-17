@@ -1,4 +1,4 @@
 [workspace]
 resolver = "2"
-members = ["foxy", "sandbox"]
+members = ["foxy", "foxy/foxy-ecs", "foxy/foxy-macro", "foxy/foxy-macro-derive", "sandbox"]
 default-members = ["sandbox"]

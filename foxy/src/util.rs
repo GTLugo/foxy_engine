@@ -9,7 +9,7 @@ pub mod shaders {
     ( $shader:literal; $device:expr ) => {{
       use wgpu::include_wgsl;
       $device.create_shader_module(&include_wgsl!(
-        concat!("../res/shaders/", $shader, ".wgsl")
+        concat!("../../res/shaders/", $shader, ".wgsl")
       ))
     }}
   }
